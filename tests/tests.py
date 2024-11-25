@@ -3,12 +3,12 @@
 import fcntl
 import gc
 import unittest
-import v4l2
+import pyv4l2
 
 
 class TestCardMethods(unittest.TestCase):
     def test_card(self):
-        mdev = v4l2.MediaDevice('/dev/media0')
+        mdev = pyv4l2.MediaDevice('/dev/media0')
         fd = mdev.fd
 
         mdev = None
