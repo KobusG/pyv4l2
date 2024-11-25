@@ -5,8 +5,8 @@ import IPython
 from traitlets.config import Config
 from pygments.token import Token
 
-import v4l2
-import v4l2.uapi
+import pyv4l2
+import pyv4l2.uapi as uapi
 
 def run_ipython(ctx, sel):
     def inputhook(context):
@@ -55,8 +55,8 @@ def run_ipython(ctx, sel):
     print('Starting IPython')
 
     def set_crop(x, y, w, h):
-        import v4l2.uapi # XXX
-        ctx.subdevices['rkisp1_resizer_mainpath'].set_selection(v4l2.uapi.V4L2_SEL_TGT_CROP, (x, y, w, h), pad=0)
+        import pyv4l2.uapi as uapi # XXX
+        ctx.subdevices['rkisp1_resizer_mainpath'].set_selection(uapi.V4L2_SEL_TGT_CROP, (x, y, w, h), pad=0)
 
     if True:
         c = Config()
@@ -68,7 +68,7 @@ def run_ipython(ctx, sel):
         c.TerminalInteractiveShell.prompts_class = MyPrompt
 
         scope = {
-            'v4l2': v4l2,
+            'v4l2': pyv4l2,
             'streams': ctx.streams,
             'subdevices': ctx.subdevices,
             'set_crop': set_crop,

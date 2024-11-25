@@ -18,8 +18,8 @@ from cam_net import NetTX
 
 from cam_types import Stream
 
-import v4l2
-from v4l2.videodev import VideoCaptureStreamer
+import pyv4l2
+from pyv4l2.videodev import VideoCaptureStreamer
 
 if TYPE_CHECKING:
     from .cam_kms import KmsContext
@@ -29,9 +29,9 @@ class Context:
     config: dict
     use_ipython: bool
     user_script: types.ModuleType | None
-    subdevices: dict[str, v4l2.SubDevice] | None
+    subdevices: dict[str, pyv4l2.SubDevice] | None
     streams: list[Stream]
-    md: v4l2.MediaDevice | None
+    md: pyv4l2.MediaDevice | None
     buf_type: str
     use_display: bool
     kms_committed: bool
@@ -122,7 +122,7 @@ def parse_args(ctx: Context):
 
 def init_mdev(ctx: Context):
     if ctx.config['media']:
-        ctx.md = v4l2.MediaDevice(*ctx.config['media'])
+        ctx.md = pyv4l2.MediaDevice(*ctx.config['media'])
     else:
         ctx.md = None
 
@@ -179,15 +179,15 @@ def init_viddevs(ctx: Context):
             if ctx.verbose:
                 print(f'Configuring {vid_ent.name} ({stream["dev_path"]})')
 
-            vd = v4l2.VideoDevice(vid_ent.interface.dev_path)
+            vd = pyv4l2.VideoDevice(vid_ent.interface.dev_path)
         else:
-            dev_path = v4l2.VideoDevice.find_video_device(*stream['device'])
+            dev_path = pyv4l2.VideoDevice.find_video_device(*stream['device'])
             stream['dev_path'] = dev_path
 
             if ctx.verbose:
                 print(f'Configuring {dev_path}')
 
-            vd = v4l2.VideoDevice(dev_path)
+            vd = pyv4l2.VideoDevice(dev_path)
 
         stream['dev'] = vd
 
@@ -201,13 +201,13 @@ def init_streamer(ctx: Context):
         if ctx.verbose:
             print(f'Configuring streamer {vd.dev_path}')
 
-        mem_type = v4l2.MemType.DMABUF if ctx.buf_type == 'drm' else v4l2.MemType.MMAP
+        mem_type = pyv4l2.MemType.DMABUF if ctx.buf_type == 'drm' else pyv4l2.MemType.MMAP
 
         if not stream.get('embedded', False):
-            assert isinstance(stream['format'], v4l2.PixelFormat)
+            assert isinstance(stream['format'], pyv4l2.PixelFormat)
             cap = vd.get_capture_streamer(mem_type, stream['w'], stream['h'], stream['format'])
         else:
-            assert isinstance(stream['format'], v4l2.MetaFormat)
+            assert isinstance(stream['format'], pyv4l2.MetaFormat)
             cap = vd.get_meta_capture_streamer(mem_type, stream['size'], stream['format'])
 
         stream['cap'] = cap
@@ -263,7 +263,7 @@ def setup(ctx: Context):
         ctx.updater = None
 
 
-def queue_buf(stream: Stream, vbuf: v4l2.VideoBuffer):
+def queue_buf(stream: Stream, vbuf: pyv4l2.VideoBuffer):
     cap = stream['cap']
     cap.queue(vbuf)
 

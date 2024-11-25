@@ -6,7 +6,7 @@ import kms
 
 from cam_types import Stream
 
-import v4l2
+import pyv4l2
 
 class KmsContext:
     def __init__(self, ctx) -> None:
@@ -41,7 +41,7 @@ class KmsContext:
                 # Hack to reserve the unscaleable GFX plane
                 assert res is not None
                 assert crtc is not None
-                res.reserve_generic_plane(crtc, v4l2.PixelFormats.RGB565)
+                res.reserve_generic_plane(crtc, pyv4l2.PixelFormats.RGB565)
 
             if isinstance(stream['size'], int):
                 stream['kms-buf-w'] = stream['size']
@@ -51,7 +51,7 @@ class KmsContext:
                 stream['kms-buf-h'] = stream['h']
 
             if 'kms-format' not in stream:
-                if isinstance(stream['format'], v4l2.MetaFormat):
+                if isinstance(stream['format'], pyv4l2.MetaFormat):
                     raise RuntimeError('No KMS format specified')
 
                 stream['kms-format'] = stream['format']
@@ -60,7 +60,7 @@ class KmsContext:
                 raise RuntimeError('No KMS format available or specified')
 
             if stream['format'] != stream['kms-format']:
-                if (isinstance(stream['format'], v4l2.PixelFormat) and
+                if (isinstance(stream['format'], pyv4l2.PixelFormat) and
                     len(stream['format'].planes) > 1):
                     raise RuntimeError('Unable to adjust formats with more than one plane')
 

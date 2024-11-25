@@ -1,5 +1,5 @@
-import v4l2
-import v4l2.uapi
+import pyv4l2
+import uapi as uapi
 
 USE_RAW_10=False
 MEDIA_DEVICE_NAME = ('rp1-cfe', 'model')
@@ -10,11 +10,11 @@ DESER_NAME = 'max96724 6-0027'
 imx219_w = 640
 imx219_h = 480
 if USE_RAW_10:
-    imx219_bus_fmt = v4l2.BusFormat.SRGGB10_1X10
-    imx219_pix_fmt = v4l2.PixelFormats.SRGGB10P
+    imx219_bus_fmt = pyv4l2.BusFormat.SRGGB10_1X10
+    imx219_pix_fmt = pyv4l2.PixelFormats.SRGGB10P
 else:
-    imx219_bus_fmt = v4l2.BusFormat.SRGGB8_1X8
-    imx219_pix_fmt = v4l2.PixelFormats.SRGGB8
+    imx219_bus_fmt = pyv4l2.BusFormat.SRGGB8_1X8
+    imx219_pix_fmt = pyv4l2.PixelFormats.SRGGB8
 
 mbus_fmt_imx219 = (imx219_w, imx219_h, imx219_bus_fmt)
 fmt_pix = (imx219_w, imx219_h, imx219_pix_fmt)
@@ -22,19 +22,19 @@ fmt_pix = (imx219_w, imx219_h, imx219_pix_fmt)
 # Embedded
 
 if USE_RAW_10:
-    imx219_bus_fmt_meta = v4l2.BusFormat.META_10
-    imx219_pix_fmt_meta = v4l2.MetaFormats.GENERIC_CSI2_10
+    imx219_bus_fmt_meta = pyv4l2.BusFormat.META_10
+    imx219_pix_fmt_meta = pyv4l2.MetaFormats.GENERIC_CSI2_10
 else:
-    imx219_bus_fmt_meta = v4l2.BusFormat.META_8
-    imx219_pix_fmt_meta = v4l2.MetaFormats.GENERIC_8
+    imx219_bus_fmt_meta = pyv4l2.BusFormat.META_8
+    imx219_pix_fmt_meta = pyv4l2.MetaFormats.GENERIC_8
 
 mbus_fmt_imx219_meta = (imx219_w, 2, imx219_bus_fmt_meta)
 fmt_pix_imx219_meta = (imx219_w, 2, imx219_pix_fmt_meta)
 
 # TPG
 
-mbus_fmt_tpg = (640, 480, v4l2.BusFormat.RGB888_1X24)
-fmt_tpg = (640, 480, v4l2.PixelFormats.BGR888)
+mbus_fmt_tpg = (640, 480, pyv4l2.BusFormat.RGB888_1X24)
+fmt_tpg = (640, 480, pyv4l2.PixelFormats.BGR888)
 
 
 def gen_imx219_pixel(cameras, port):
@@ -57,7 +57,7 @@ def gen_imx219_pixel(cameras, port):
                    { 'src': (1, 0), 'dst': (0, 0) },
                 ],
                 'controls': [
-                    (v4l2.uapi.V4L2_CID_ANALOGUE_GAIN, 200),
+                    (uapi.V4L2_CID_ANALOGUE_GAIN, 200),
                 ],
             },
 
@@ -101,7 +101,7 @@ def gen_imx219_pixel(cameras, port):
             {
                 'entity': f'rp1-cfe-csi2-ch{port}',
                 'fmt': fmt_pix,
-                'kms-format': v4l2.PixelFormats.RGB565,
+                'kms-format': pyv4l2.PixelFormats.RGB565,
             },
         ],
 
@@ -176,7 +176,7 @@ def gen_imx219_meta(cameras, port):
                 'fmt': fmt_pix_imx219_meta,
                 'embedded': True,
                 'display': False,
-                'kms-format': v4l2.PixelFormats.RGB565,
+                'kms-format': pyv4l2.PixelFormats.RGB565,
             },
         ],
 
@@ -293,7 +293,7 @@ def gen_ser_tpg(cameras, port):
 
 # Find serializers and sensors connected to the deserializer
 def find_devices(mdev_name, deser_name):
-    md = v4l2.MediaDevice(*mdev_name)
+    md = pyv4l2.MediaDevice(*mdev_name)
     assert md
     deser = md.find_entity(deser_name)
     assert deser

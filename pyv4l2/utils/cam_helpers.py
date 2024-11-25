@@ -6,8 +6,8 @@ import sys
 import typing
 from typing import TYPE_CHECKING
 
-import v4l2
-import v4l2.uapi
+import pyv4l2
+import pyv4l2.uapi as uapi
 
 from cam_types import Stream
 
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     import kms
 
 # Disable all possible links
-def disable_all_links(md: v4l2.MediaDevice):
+def disable_all_links(md: pyv4l2.MediaDevice):
     for ent in md.entities:
         for l in ent.pad_links:
             if l.is_immutable:
@@ -168,7 +168,7 @@ def configure_subdevs(ctx: Context, config):
     for e in config.get('subdevs', []):
         ent = md.find_entity(e['entity'])
         assert ent
-        subdev = v4l2.SubDevice(ent.interface.dev_path)
+        subdev = pyv4l2.SubDevice(ent.interface.dev_path)
 
         if ctx.verbose:
             print(f'Configuring {ent.name}')
@@ -186,12 +186,12 @@ def configure_subdevs(ctx: Context, config):
                 sink_pad, sink_stream = r['src']
                 source_pad, source_stream = r['dst']
 
-                route = v4l2.Route()
+                route = pyv4l2.Route()
                 route.sink_pad = sink_pad
                 route.sink_stream = sink_stream
                 route.source_pad = source_pad
                 route.source_stream = source_stream
-                route.flags = v4l2.uapi.V4L2_SUBDEV_ROUTE_FL_ACTIVE
+                route.flags = uapi.V4L2_SUBDEV_ROUTE_FL_ACTIVE
 
                 routes.append(route)
 
@@ -222,11 +222,11 @@ def configure_subdevs(ctx: Context, config):
 
             if 'crop.bounds' in p:
                 x, y, w, h = p['crop.bounds']
-                subdev.set_selection(v4l2.uapi.V4L2_SEL_TGT_CROP_BOUNDS, v4l2.uapi.v4l2_rect(x, y, w, h), pad, stream)
+                subdev.set_selection(uapi.V4L2_SEL_TGT_CROP_BOUNDS, uapi.v4l2_rect(x, y, w, h), pad, stream)
 
             if 'crop' in p:
                 x, y, w, h = p['crop']
-                subdev.set_selection(v4l2.uapi.V4L2_SEL_TGT_CROP, v4l2.uapi.v4l2_rect(x, y, w, h), pad, stream)
+                subdev.set_selection(uapi.V4L2_SEL_TGT_CROP, uapi.v4l2_rect(x, y, w, h), pad, stream)
 
             if 'ival' in p:
                 assert(len(p['ival']) == 2)
@@ -248,7 +248,7 @@ def save_fb_to_file(stream: Stream, is_drm, fb_or_vbuf):
             with open(filename, 'wb') as f:
                 f.write(b)
     else:
-        vbuf = typing.cast(v4l2.VideoBuffer, fb_or_vbuf)
+        vbuf = typing.cast(pyv4l2.VideoBuffer, fb_or_vbuf)
 
         with mmap.mmap(cap.fd, cap.framesize, mmap.MAP_SHARED, mmap.PROT_READ,
                        offset=vbuf.offset) as b:

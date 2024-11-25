@@ -5,8 +5,8 @@ import errno
 import textwrap
 import sys
 
-import v4l2
-import v4l2.uapi
+import pyv4l2
+import pyv4l2.uapi as uapi
 
 def print_selection(subdev, pad, stream, target):
     name = target.name.lower()
@@ -20,14 +20,14 @@ def print_selection(subdev, pad, stream, target):
 
 
 def print_selections(subdev, pad, stream):
-    print_selection(subdev, pad, stream, v4l2.uapi.v4l2_sel_tgt.NATIVE_SIZE)
-    print_selection(subdev, pad, stream, v4l2.uapi.v4l2_sel_tgt.CROP_BOUNDS)
-    print_selection(subdev, pad, stream, v4l2.uapi.v4l2_sel_tgt.CROP_DEFAULT)
-    print_selection(subdev, pad, stream, v4l2.uapi.v4l2_sel_tgt.CROP)
-    print_selection(subdev, pad, stream, v4l2.uapi.v4l2_sel_tgt.COMPOSE_BOUNDS)
-    print_selection(subdev, pad, stream, v4l2.uapi.v4l2_sel_tgt.COMPOSE_DEFAULT)
-    print_selection(subdev, pad, stream, v4l2.uapi.v4l2_sel_tgt.COMPOSE)
-    print_selection(subdev, pad, stream, v4l2.uapi.v4l2_sel_tgt.COMPOSE_PADDED)
+    print_selection(subdev, pad, stream, uapi.v4l2_sel_tgt.NATIVE_SIZE)
+    print_selection(subdev, pad, stream, uapi.v4l2_sel_tgt.CROP_BOUNDS)
+    print_selection(subdev, pad, stream, uapi.v4l2_sel_tgt.CROP_DEFAULT)
+    print_selection(subdev, pad, stream, uapi.v4l2_sel_tgt.CROP)
+    print_selection(subdev, pad, stream, uapi.v4l2_sel_tgt.COMPOSE_BOUNDS)
+    print_selection(subdev, pad, stream, uapi.v4l2_sel_tgt.COMPOSE_DEFAULT)
+    print_selection(subdev, pad, stream, uapi.v4l2_sel_tgt.COMPOSE)
+    print_selection(subdev, pad, stream, uapi.v4l2_sel_tgt.COMPOSE_PADDED)
 
 
 def print_routes(subdev):
@@ -39,13 +39,13 @@ def print_routes(subdev):
     for r in routes:
         print('    {}/{} -> {}/{} [{}]'.format(r.sink_pad, r.sink_stream,
                                                r.source_pad, r.source_stream,
-                                               v4l2.RouteFlag(r.flags).name))
+                                               pyv4l2.RouteFlag(r.flags).name))
 
 
 def print_videodev_pad(videodev, print_supported):
     def print_videodef_fmts(videodev, buftype, title,):
         fmts = videodev.get_formats(buftype)
-        fmts = [f"{f.name} ('{v4l2.fourcc_to_str(f.v4l2_fourcc)}')" for f in fmts]
+        fmts = [f"{f.name} ('{pyv4l2.fourcc_to_str(f.v4l2_fourcc)}')" for f in fmts]
 
         unsupported_fmts = videodev.get_unsupported_formats(buftype)
         unsupported_fmts = [f"'{f}'" for f in unsupported_fmts]
@@ -63,55 +63,55 @@ def print_videodev_pad(videodev, print_supported):
 
     if videodev.has_capture:
         try:
-            fmt = videodev.get_format(v4l2.BufType.VIDEO_CAPTURE)
+            fmt = videodev.get_format(pyv4l2.BufType.VIDEO_CAPTURE)
             f = fmt.fmt.pix
-            fmt = f'{f.width}x{f.height}/{v4l2.fourcc_to_str(f.pixelformat)}'
+            fmt = f'{f.width}x{f.height}/{pyv4l2.fourcc_to_str(f.pixelformat)}'
             print(f'    vcap: {fmt}')
         except OSError as e:
             if e.errno != errno.ENOTTY:
                 print(f'    <{e}>')
 
         if print_supported:
-            print_videodef_fmts(videodev, v4l2.BufType.VIDEO_CAPTURE, 'vcap')
+            print_videodef_fmts(videodev, pyv4l2.BufType.VIDEO_CAPTURE, 'vcap')
 
     if videodev.has_mplane_capture:
         try:
-            fmt = videodev.get_format(v4l2.BufType.VIDEO_CAPTURE_MPLANE)
+            fmt = videodev.get_format(pyv4l2.BufType.VIDEO_CAPTURE_MPLANE)
             f = fmt.fmt.pix_mp
-            fmt = f'{f.width}x{f.height}/{v4l2.fourcc_to_str(f.pixelformat)} numplanes:{f.num_planes}'
+            fmt = f'{f.width}x{f.height}/{pyv4l2.fourcc_to_str(f.pixelformat)} numplanes:{f.num_planes}'
             print(f'    vcapm: {fmt}')
         except OSError as e:
             if e.errno != errno.ENOTTY:
                 print(f'    <{e}>')
 
         if print_supported:
-            print_videodef_fmts(videodev, v4l2.BufType.VIDEO_CAPTURE_MPLANE, 'vcapm')
+            print_videodef_fmts(videodev, pyv4l2.BufType.VIDEO_CAPTURE_MPLANE, 'vcapm')
 
     if videodev.has_meta_capture:
         try:
-            fmt = videodev.get_format(v4l2.BufType.META_CAPTURE)
+            fmt = videodev.get_format(pyv4l2.BufType.META_CAPTURE)
             f = fmt.fmt.meta
-            fmt = f'{f.buffersize}/{v4l2.fourcc_to_str(f.dataformat)}'
+            fmt = f'{f.buffersize}/{pyv4l2.fourcc_to_str(f.dataformat)}'
             print(f'    mcap: {fmt}')
         except OSError as e:
             if e.errno != errno.ENOTTY:
                 print(f'    <{e}>')
 
         if print_supported:
-            print_videodef_fmts(videodev, v4l2.BufType.META_CAPTURE, 'mcap')
+            print_videodef_fmts(videodev, pyv4l2.BufType.META_CAPTURE, 'mcap')
 
     if videodev.has_meta_output:
         try:
-            fmt = videodev.get_format(v4l2.BufType.META_OUTPUT)
+            fmt = videodev.get_format(pyv4l2.BufType.META_OUTPUT)
             f = fmt.fmt.meta
-            fmt = f'{f.buffersize}/{v4l2.fourcc_to_str(f.dataformat)}'
+            fmt = f'{f.buffersize}/{pyv4l2.fourcc_to_str(f.dataformat)}'
             print(f'    mout: {fmt}')
         except OSError as e:
             if e.errno != errno.ENOTTY:
                 print(f'    <{e}>')
 
         if print_supported:
-            print_videodef_fmts(videodev, v4l2.BufType.META_OUTPUT, 'mout')
+            print_videodef_fmts(videodev, pyv4l2.BufType.META_OUTPUT, 'mout')
 
 
 def print_streams(subdev, pad, streams, print_supported):
@@ -121,7 +121,7 @@ def print_streams(subdev, pad, streams, print_supported):
             f = fmt.format
 
             try:
-                bfmt = v4l2.BusFormat(f.code).name
+                bfmt = pyv4l2.BusFormat(f.code).name
             except ValueError:
                 bfmt = f'0x{f.code:x}'
 
@@ -177,14 +177,14 @@ def print_pads(ent, subdev, videodev, only_graph: bool, print_supported):
         if len(links) == 1:
             link = links[0]
             remote_pad = link.source_pad if link.sink_pad == pad else link.sink_pad
-            link_fmt = f"{link_dir} '{remote_pad.entity.name}':{remote_pad.index} [{v4l2.MediaLinkFlag(link.flags).name}]"
+            link_fmt = f"{link_dir} '{remote_pad.entity.name}':{remote_pad.index} [{pyv4l2.MediaLinkFlag(link.flags).name}]"
             print(f'  Pad{pad.index} [{pad.flags.name}] {link_fmt}')
         else:
             print(f'  Pad{pad.index} [{pad.flags.name}]')
 
             for link in links:
                 remote_pad = link.source_pad if link.sink_pad == pad else link.sink_pad
-                print(f"      {link_dir} '{remote_pad.entity.name}':{remote_pad.index} [{v4l2.MediaLinkFlag(link.flags).name}]")
+                print(f"      {link_dir} '{remote_pad.entity.name}':{remote_pad.index} [{pyv4l2.MediaLinkFlag(link.flags).name}]")
 
         if routes:
             streams = set([r.source_stream for r in routes if r.source_pad == pad.index] + [r.sink_stream for r in routes if r.sink_pad == pad.index])
@@ -212,12 +212,12 @@ def print_entity(ent, only_graph: bool, print_supported):
         print()
 
     if ent.interface and ent.interface.is_subdev:
-        subdev = v4l2.SubDevice(ent.interface.dev_path)
+        subdev = pyv4l2.SubDevice(ent.interface.dev_path)
     else:
         subdev = None
 
     if ent.interface and ent.interface.is_video:
-        videodev = v4l2.VideoDevice(ent.interface.dev_path)
+        videodev = pyv4l2.VideoDevice(ent.interface.dev_path)
     else:
         videodev = None
 
@@ -238,7 +238,7 @@ def main():
     parser.add_argument('pattern', nargs='?', help='Entity pattern to show')
     args = parser.parse_args()
 
-    md = v4l2.MediaDevice(args.device)
+    md = pyv4l2.MediaDevice(args.device)
 
     if args.pattern:
         if args.all:

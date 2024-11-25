@@ -1,10 +1,10 @@
-import v4l2
+import pyv4l2
 
 imx219_w = 640
 imx219_h = 480
 
-mbus_fmt = (imx219_w, imx219_h, v4l2.BusFormat.RBG888_1X24)
-fmt_pix = (imx219_w, imx219_h, v4l2.PixelFormats.BGR888)
+mbus_fmt = (imx219_w, imx219_h, pyv4l2.BusFormat.RBG888_1X24)
+fmt_pix = (imx219_w, imx219_h, pyv4l2.PixelFormats.BGR888)
 
 configurations = {}
 

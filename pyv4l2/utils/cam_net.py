@@ -5,7 +5,7 @@ import socket
 import struct
 
 from cam_types import Stream
-from v4l2 import MetaFormat
+from pyv4l2 import MetaFormat
 
 
 class NetTX:

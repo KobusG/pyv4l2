@@ -1,10 +1,10 @@
-import v4l2
+import pyv4l2
 
 sensor_1_w = 1280
 sensor_1_h = 720
 
-PIX_BUS_FMT = v4l2.BusFormat.UYVY8_1X16
-PIX_FMT = v4l2.PixelFormats.UYVY
+PIX_BUS_FMT = pyv4l2.BusFormat.UYVY8_1X16
+PIX_FMT = pyv4l2.PixelFormats.UYVY
 
 mbus_fmt_pix_1 = (sensor_1_w, sensor_1_h, PIX_BUS_FMT)
 fmt_pix_1 = (sensor_1_w, sensor_1_h, PIX_FMT)

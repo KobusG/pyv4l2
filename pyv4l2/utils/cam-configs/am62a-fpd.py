@@ -1,22 +1,22 @@
-import v4l2
+import pyv4l2
 
 imx219_w = 640
 imx219_h = 480
-#imx219_bus_fmt = v4l2.BusFormat.SRGGB10_1X10
-#imx219_pix_fmt = v4l2.PixelFormat.SRGGB10P
-imx219_bus_fmt = v4l2.BusFormat.SRGGB8_1X8
-imx219_pix_fmt = v4l2.PixelFormats.SRGGB8
+#imx219_bus_fmt = pyv4l2.BusFormat.SRGGB10_1X10
+#imx219_pix_fmt = pyv4l2.PixelFormat.SRGGB10P
+imx219_bus_fmt = pyv4l2.BusFormat.SRGGB8_1X8
+imx219_pix_fmt = pyv4l2.PixelFormats.SRGGB8
 
 mbus_fmt_imx219 = (imx219_w, imx219_h, imx219_bus_fmt)
 fmt_pix_imx219 = (imx219_w, imx219_h, imx219_pix_fmt)
 
-mbus_fmt_imx219_meta = (imx219_w, 2, v4l2.BusFormat.META_8)
-fmt_pix_imx219_meta = (imx219_w, 2, v4l2.MetaFormats.GENERIC_8)
+mbus_fmt_imx219_meta = (imx219_w, 2, pyv4l2.BusFormat.META_8)
+fmt_pix_imx219_meta = (imx219_w, 2, pyv4l2.MetaFormats.GENERIC_8)
 
 # TPG
 
-mbus_fmt_tpg = (1920, 1024, v4l2.BusFormat.UYVY8_1X16)
-fmt_tpg = (1920, 1024, v4l2.PixelFormats.UYVY)
+mbus_fmt_tpg = (1920, 1024, pyv4l2.BusFormat.UYVY8_1X16)
+fmt_tpg = (1920, 1024, pyv4l2.PixelFormats.UYVY)
 
 configurations = {}
 

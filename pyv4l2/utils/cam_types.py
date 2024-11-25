@@ -4,9 +4,9 @@ from collections import deque
 from typing import TypedDict
 
 from kms import DumbFramebuffer, Plane
-from v4l2 import PixelFormat, MetaFormat
+from pyv4l2 import PixelFormat, MetaFormat
 
-from v4l2.videodev import CaptureStreamer, VideoBuffer, VideoDevice
+from pyv4l2.videodev import CaptureStreamer, VideoBuffer, VideoDevice
 
 
 pix_or_meta_fmt = PixelFormat | MetaFormat

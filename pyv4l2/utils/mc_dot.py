@@ -4,7 +4,7 @@ import argparse
 import errno
 import sys
 
-import v4l2
+import pyv4l2
 
 def add_entity(dot, entity_id: int, entity_label: str,
                sink_pads, source_pads,
@@ -45,7 +45,7 @@ def add_entity(dot, entity_id: int, entity_label: str,
 def add_entities(dot, entities):
     for entity in entities:
         if entity.interface and entity.interface.is_subdev:
-            subdev = v4l2.SubDevice(entity.interface.dev_path)
+            subdev = pyv4l2.SubDevice(entity.interface.dev_path)
         else:
             subdev = None
 
@@ -90,7 +90,7 @@ def add_connections_for_link(dot, entity, pad, l):
     remote_entity = remote_pad.entity
 
     if entity.interface and entity.interface.is_subdev:
-        subdev = v4l2.SubDevice(entity.interface.dev_path)
+        subdev = pyv4l2.SubDevice(entity.interface.dev_path)
     else:
         subdev = None
 
@@ -105,7 +105,7 @@ def add_connections_for_link(dot, entity, pad, l):
         streams = [ 0 ]
 
     if remote_entity.interface and remote_entity.interface.is_subdev:
-        remote_subdev = v4l2.SubDevice(remote_entity.interface.dev_path)
+        remote_subdev = pyv4l2.SubDevice(remote_entity.interface.dev_path)
         routes = [r for r in remote_subdev.get_routes() if r.is_active]
 
         remote_streams = set()
@@ -127,7 +127,7 @@ def add_connections_for_link(dot, entity, pad, l):
                 f = fmt.format
 
                 try:
-                    bfmt = v4l2.BusFormat(f.code).name
+                    bfmt = pyv4l2.BusFormat(f.code).name
                 except ValueError:
                     bfmt = f'0x{f.code:x}'
 
@@ -167,7 +167,7 @@ def main():
     parser.add_argument('-d', '--device', default='/dev/media0', help='Media device')
     args = parser.parse_args()
 
-    md = v4l2.MediaDevice(args.device)
+    md = pyv4l2.MediaDevice(args.device)
 
     dot = []
 
