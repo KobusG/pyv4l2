@@ -37,6 +37,10 @@ packages = ['pyv4l2', 'pyv4l2.uapi', 'pyv4l2.utils']
 [project.scripts]
 mc-dot = 'pyv4l2.utils.mc_dot:main'
 mc-print = 'pyv4l2.utils.mc_print:main'
+cam = 'pyv4l2.utils.cam:main'
+
+[project.gui-scripts]
+cam-rx = 'pyv4l2.utils.cam_rx:main'
 
 [tool.ruff]
 line-length = 100
