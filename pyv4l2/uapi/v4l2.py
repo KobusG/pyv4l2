@@ -3814,24 +3814,13 @@ union_anon_17._fields_ = [
 ]
 
 
-class struct_v4l2_querymenu(Structure):
-    pass
-
-struct_v4l2_querymenu.__slots__ = [
-    'id',
-    'index',
-    'unnamed_1',
-    'reserved',
-]
-struct_v4l2_querymenu._anonymous_ = [
-    'unnamed_1',
-]
-struct_v4l2_querymenu._fields_ = [
-    ('id', __u32),
-    ('index', __u32),
-    ('unnamed_1', union_anon_17),
-    ('reserved', __u32),
-]
+class struct_v4l2_querymenu(ctypes.Structure):
+    _fields_ = [
+        ('id', ctypes.c_uint32),
+        ('index', ctypes.c_uint32),
+        ('name', ctypes.c_char * 32),
+        ('reserved', ctypes.c_uint32),
+    ]
 
 
 class struct_v4l2_tuner(Structure):
@@ -11174,4 +11163,3 @@ v4l2_subdev_client_capability = struct_v4l2_subdev_client_capability
 # No inserted files
 
 # No prefix-stripping
-
